@@ -1,0 +1,12 @@
+# composer
+/composer.lock
+/vendor/
+
+# phpunit
+/coverage/
+/.phpunit.result.cache
+
+# misc.
+/*.sublime-workspace
+/.php-cs-fixer.cache
+/demo/migrations.txt

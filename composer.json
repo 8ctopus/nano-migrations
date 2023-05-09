@@ -1,0 +1,44 @@
+{
+    "name": "8ctopus/migration",
+    "type": "library",
+    "description": "Automate database migrations",
+    "keywords": ["database", "migration"],
+    "homepage": "https://github.com/8ctopus/migration",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "8ctopus",
+            "email": "hello@octopuslabs.io"
+        }
+    ],
+    "require": {
+    },
+    "require-dev": {
+        "clue/commander": "^1.4",
+        "8ctopus/apix-log": "^3",
+        "phpunit/phpunit": "^9.0|^10.0",
+        "friendsofphp/php-cs-fixer": "^3.4",
+        "phpstan/phpstan": "^1.4",
+        "phpmd/phpmd": "^2.11"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "autoload": {
+        "psr-4": {
+            "Oct8pus\\Migration\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests/",
+            "Demo\\": "demo/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit --coverage-html=coverage",
+        "fix": "php-cs-fixer fix --verbose",
+        "fix-risky": "php-cs-fixer fix --allow-risky=yes --verbose",
+        "phpstan": "phpstan analyse --level 9 src",
+        "phpmd": "phpmd src/ text cleancode,codesize,controversial,design,naming,unusedcode"
+    }
+}
