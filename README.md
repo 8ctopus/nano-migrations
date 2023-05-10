@@ -10,7 +10,7 @@
 
 A tiny database migrations package
 
-Migrations are used to manage database schema changes over time. The rationale behind it is to make it easier to maintain and evolve the database schema as the application evolves.
+Migrations are used to manage database schema changes over time. The rationale behind migrations is to make it easier to maintain and evolve the database schema as the application evolves. This package makes it easy to deal with migrations in small projects not using a framework.
 
 ## demo
 

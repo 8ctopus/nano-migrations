@@ -104,7 +104,7 @@ final class AbstractMigrationTest extends TestCase
         static::assertStringContainsString('WARNING rollback - CANCELED - nothing to rollback', implode("\n", $logger->getItems()));
     }
 
-    public function testMigrationsFileWrite() : void
+    public function testMigrationsFileLock() : void
     {
         static::expectException(MigrationException::class);
         static::expectExceptionMessage('lock migrations file');
@@ -127,7 +127,7 @@ final class AbstractMigrationTest extends TestCase
         }
     }
 
-    public function testMigrationsRollbackFileWrite() : void
+    public function testMigrationsRollbackFileLock() : void
     {
         static::expectException(MigrationException::class);
         static::expectExceptionMessage('lock migrations file');
