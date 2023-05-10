@@ -100,7 +100,7 @@ final class AbstractMigrationTest extends TestCase
 
         $migration = (new MigrationMock(static::$migrationsFile, null));
 
-        $handle = fopen(static::$migrationsFile, 'c');
+        $handle = fopen(static::$migrationsFile, 'r+');
         flock($handle, LOCK_EX);
 
         try {
@@ -121,7 +121,7 @@ final class AbstractMigrationTest extends TestCase
 
         $migration = (new MigrationMock(static::$migrationsFile, null));
 
-        $handle = fopen(static::$migrationsFile, 'c');
+        $handle = fopen(static::$migrationsFile, 'r+');
         flock($handle, LOCK_EX);
 
         try {

@@ -49,7 +49,21 @@ abstract class AbstractMigration
         $methods = $this->methods('up');
 
         // get already processed methods
-        $migrated = explode("\n", file_get_contents($this->file, false));
+        $handle = fopen($this->file, 'r+', false);
+
+        if ($handle === false) {
+            throw new MigrationException('open migrations file');
+        }
+
+        $size = fstat($handle)['size'];
+
+        $content = ($size > 0) ? fread($handle, $size) : '';
+
+        if ($content === false) {
+            throw new MigrationException('read migrations file');
+        }
+
+        $migrated = explode("\n", $content);
 
         // get not migrated methods
         $methods = array_diff($methods, $migrated);
@@ -76,16 +90,12 @@ abstract class AbstractMigration
 
             $this->logger?->info("{$method} - OK");
 
-            $migrated[] = $method;
-
-            // save migrated
-            $text = implode("\n", $migrated);
-            $text = trim($text);
-
-            if (file_put_contents($this->file, $text) === false) {
+            if (@fwrite($handle, $method . "\n") === false) {
                 throw new MigrationException('save migrations file');
             }
         }
+
+        fclose($handle);
 
         $this->logger?->notice(__FUNCTION__ . ' - OK');
 
@@ -114,7 +124,20 @@ abstract class AbstractMigration
         }
 
         // get all migrations
-        $migrated = explode("\n", file_get_contents($this->file, false));
+        $handle = fopen($this->file, 'r+', false);
+        $size = fstat($handle)['size'];
+
+        if ($handle === false) {
+            throw new MigrationException('open migrations file');
+        }
+
+        $content = ($size > 0) ? fread($handle, $size) : '';
+
+        if ($content === false) {
+            throw new MigrationException('read migrations file');
+        }
+
+        $migrated = explode("\n", $content);
 
         // remove empty values
         $migrated = array_filter($migrated);
@@ -148,10 +171,16 @@ abstract class AbstractMigration
             $migrated = array_values(array_diff($migrated, [str_replace('down', 'up', $method)]));
 
             // save rollback
-            if (file_put_contents($this->file, implode("\n", $migrated)) === false) {
+            if (!ftruncate($handle, 0)) {
+                throw new MigrationException('truncate migrations file');
+            }
+
+            if (fwrite($handle, implode("\n", $migrated)) === false) {
                 throw new MigrationException('save migrations file');
             }
         }
+
+        fclose($handle);
 
         $this->logger?->notice(__FUNCTION__ . ' - OK');
 

@@ -101,7 +101,7 @@ final class Migration extends AbstractPDOMigration
      */
     protected function safetyCheck() : self
     {
-        $stdin = fopen('php://stdin', 'r');
+        $stdin = fopen('php://stdin', 'r', false);
 
         if ($stdin === false) {
             throw new MigrationException('fopen');
