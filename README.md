@@ -1,4 +1,4 @@
-# nano migration
+# nano migrations
 
 [![packagist](http://poser.pugx.org/8ctopus/nano-migration/v)](https://packagist.org/packages/8ctopus/nano-migration)
 [![downloads](http://poser.pugx.org/8ctopus/nano-migration/downloads)](https://packagist.org/packages/8ctopus/nano-migration)
