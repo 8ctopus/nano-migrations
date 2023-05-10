@@ -180,11 +180,16 @@ abstract class AbstractMigration
 
         $handle = @fopen($this->file, 'r+', false);
 
-        if ($handle !== false) {
-            return $handle;
+        if ($handle === false) {
+            throw new MigrationException('open migrations file');
         }
 
-        throw new MigrationException('open migrations file');
+        // lock file
+        if (!flock($handle, LOCK_EX | LOCK_NB)) {
+            throw new MigrationException('lock migrations file');
+        }
+
+        return $handle;
     }
 
     /**

@@ -107,7 +107,7 @@ final class AbstractMigrationTest extends TestCase
     public function testMigrationsFileWrite() : void
     {
         static::expectException(MigrationException::class);
-        static::expectExceptionMessage('write to migrations file');
+        static::expectExceptionMessage('lock migrations file');
 
         $migration = (new MigrationMock(static::$migrationsFile, null));
 
@@ -130,7 +130,7 @@ final class AbstractMigrationTest extends TestCase
     public function testMigrationsRollbackFileWrite() : void
     {
         static::expectException(MigrationException::class);
-        static::expectExceptionMessage('write to migrations file');
+        static::expectExceptionMessage('lock migrations file');
 
         $migration = (new MigrationMock(static::$migrationsFile, null));
 
