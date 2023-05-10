@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Apix\Log\Logger\Runtime;
 use Oct8pus\Migration\AbstractMigration;
+use Oct8pus\Migration\MigrationException;
 
 /**
  * @internal
@@ -28,6 +30,75 @@ final class AbstractMigrationTest extends TestCase
             ->rollback(99);
 
         static::assertTrue(true);
+    }
+
+    public function testWithMigrateCountOK() : void
+    {
+        (new MigrationMock(static::$migrationsFile, null))
+            ->migrate(6)
+            ->rollback(99);
+
+        static::assertTrue(true);
+    }
+
+    public function testMigrationsCount() : void
+    {
+        static::expectException(MigrationException::class);
+        static::expectExceptionMessage('migration count must be greater than zero');
+
+        (new MigrationMock(static::$migrationsFile, null))
+            ->migrate(0)
+            ->rollback(99);
+    }
+
+    public function testRollbackCount() : void
+    {
+        static::expectException(MigrationException::class);
+        static::expectExceptionMessage('rollback count must be greater than zero');
+
+        (new MigrationMock(static::$migrationsFile, null))
+            ->rollback(0);
+    }
+
+    public function testMigrationsFileDoesNotExist() : void
+    {
+        static::expectException(MigrationException::class);
+        static::expectExceptionMessage('migration file does not exist');
+
+        (new MigrationMock(sys_get_temp_dir() . '/phpunit-migrations-not-exist.txt', null))
+            ->migrate(1)
+            ->rollback(99);
+    }
+
+    public function testRollbackFileDoesNotExist() : void
+    {
+        static::expectException(MigrationException::class);
+        static::expectExceptionMessage('migration file does not exist');
+
+        (new MigrationMock(sys_get_temp_dir() . '/phpunit-migrations-not-exist.txt', null))
+            ->rollback(1);
+    }
+
+    public function testNothingToMigrate() : void
+    {
+        $logger = new Runtime();
+
+        (new MigrationMock(static::$migrationsFile, $logger))
+            ->migrate(null)
+            ->migrate(null);
+
+        static::assertStringContainsString('INFO migrate - CANCELED - nothing to migrate', implode("\n", $logger->getItems()));
+    }
+
+    public function testNothingToRollback() : void
+    {
+        $logger = new Runtime();
+
+        (new MigrationMock(static::$migrationsFile, $logger))
+            ->rollback(99)
+            ->rollback(99);
+
+        static::assertStringContainsString('WARNING rollback - CANCELED - nothing to rollback', implode("\n", $logger->getItems()));
     }
 }
 
