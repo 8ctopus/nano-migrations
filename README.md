@@ -1,12 +1,12 @@
 # nano migrations
 
-[![packagist](http://poser.pugx.org/8ctopus/nano-migration/v)](https://packagist.org/packages/8ctopus/nano-migration)
-[![downloads](http://poser.pugx.org/8ctopus/nano-migration/downloads)](https://packagist.org/packages/8ctopus/nano-migration)
-[![min php version](http://poser.pugx.org/8ctopus/nano-migration/require/php)](https://packagist.org/packages/8ctopus/nano-migration)
-[![license](http://poser.pugx.org/8ctopus/nano-migration/license)](https://packagist.org/packages/8ctopus/nano-migration)
-[![tests](https://github.com/8ctopus/nano-migration/actions/workflows/tests.yml/badge.svg)](https://github.com/8ctopus/nano-migration/actions/workflows/tests.yml)
-![code coverage badge](https://raw.githubusercontent.com/8ctopus/nano-migration/image-data/coverage.svg)
-![lines of code](https://raw.githubusercontent.com/8ctopus/nano-migration/image-data/lines.svg)
+[![packagist](http://poser.pugx.org/8ctopus/nano-migrations/v)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![downloads](http://poser.pugx.org/8ctopus/nano-migrations/downloads)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![min php version](http://poser.pugx.org/8ctopus/nano-migrations/require/php)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![license](http://poser.pugx.org/8ctopus/nano-migrations/license)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![tests](https://github.com/8ctopus/nano-migrations/actions/workflows/tests.yml/badge.svg)](https://github.com/8ctopus/nano-migrations/actions/workflows/tests.yml)
+![code coverage badge](https://raw.githubusercontent.com/8ctopus/nano-migrations/image-data/coverage.svg)
+![lines of code](https://raw.githubusercontent.com/8ctopus/nano-migrations/image-data/lines.svg)
 
 A tiny database migrations package
 
@@ -28,7 +28,7 @@ Migrations are used to manage database schema changes over time. The rationale b
 
 ## install
 
-    composer require 8ctopus/nano-migration
+    composer require 8ctopus/nano-migrationss
 
 You will need to extend `AbstractPDOMigration` class if you use php `PDO`. Extending the class requires implementing the `up` and `down` migration methods and the potential safety check. Refer to the demo directory example.
 
