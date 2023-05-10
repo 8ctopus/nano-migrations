@@ -8,7 +8,9 @@
 ![code coverage badge](https://raw.githubusercontent.com/8ctopus/nano-migration/image-data/coverage.svg)
 ![lines of code](https://raw.githubusercontent.com/8ctopus/nano-migration/image-data/lines.svg)
 
-A tiny database migration package
+A tiny database migrations package
+
+Migrations are used to manage database schema changes over time. The rationale behind it is to make it easier to maintain and evolve the database schema as the application evolves.
 
 ## demo
 
