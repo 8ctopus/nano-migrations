@@ -84,6 +84,8 @@ abstract class AbstractMigration
                 throw new MigrationException('save file');
             }
         }
+
+        return $this;
     }
 
     /**
@@ -144,6 +146,8 @@ abstract class AbstractMigration
                 throw new MigrationException('save rollback');
             }
         }
+
+        return $this;
     }
 
     /**
