@@ -38,7 +38,7 @@ abstract class AbstractMigration
         $this->logger?->notice(__FUNCTION__ . '...');
 
         if (isset($count) && $count <= 0) {
-            throw new MigrationException('migrate count must be > 0');
+            throw new MigrationException('migration count must be greater than zero');
         }
 
         if (!file_exists($this->file)) {
@@ -106,7 +106,7 @@ abstract class AbstractMigration
         $this->logger?->notice(__FUNCTION__ . '...');
 
         if ($count <= 0) {
-            throw new MigrationException('rollback count must be > 0');
+            throw new MigrationException('rollback count must be greater than zero');
         }
 
         if (!file_exists($this->file)) {
@@ -167,6 +167,13 @@ abstract class AbstractMigration
      */
     abstract protected function query(string $sql) : self;
 
+    /**
+     * Safety check before migrations are run
+     *
+     * @return self
+     *
+     * @throws MigrationException
+     */
     abstract protected function safetyCheck() : self;
 
     /**

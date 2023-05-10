@@ -49,10 +49,6 @@ abstract class AbstractPDOMigration extends AbstractMigration
      */
     private function connect(string $host, string $user, string $pass, string $name) : self
     {
-        if (isset($this->db)) {
-            return $this;
-        }
-
         $this->db = new PDO("mysql:host={$host};dbname={$name};charset=utf8", $user, $pass, [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
