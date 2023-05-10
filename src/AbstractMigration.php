@@ -232,8 +232,8 @@ abstract class AbstractMigration
             throw new MigrationException('truncate migrations file');
         }
 
-        if (fwrite($handle, implode("\n", $migrated)) === false) {
-            throw new MigrationException('save migrations file');
+        if (@fwrite($handle, implode("\n", $migrated)) === false) {
+            throw new MigrationException('write to migrations file');
         }
 
         return $this;
