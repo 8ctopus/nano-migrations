@@ -11,7 +11,7 @@ use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-(new \NunoMaduro\Collision\Provider)->register();
+(new \NunoMaduro\Collision\Provider())->register();
 
 $logger = (new Stream('php://stdout'))
     // intercept logs that are >=

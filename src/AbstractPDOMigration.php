@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Oct8pus\Migration;
 
-use Oct8pus\Migration\AbstractMigration;
 use PDO;
 use Psr\Log\LoggerInterface;
 
@@ -15,7 +14,7 @@ abstract class AbstractPDOMigration extends AbstractMigration
     /**
      * Constructor
      *
-     * @param string           $file - migrations file
+     * @param string           $file   - migrations file
      * @param string           $host
      * @param string           $user
      * @param string           $pass
