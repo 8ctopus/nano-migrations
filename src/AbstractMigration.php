@@ -83,7 +83,7 @@ abstract class AbstractMigration
             $text = trim($text);
 
             if (file_put_contents($this->file, $text) === false) {
-                throw new MigrationException('save file');
+                throw new MigrationException('save migrations file');
             }
         }
 
@@ -149,7 +149,7 @@ abstract class AbstractMigration
 
             // save rollback
             if (file_put_contents($this->file, implode("\n", $migrated)) === false) {
-                throw new MigrationException('save rollback');
+                throw new MigrationException('save migrations file');
             }
         }
 
