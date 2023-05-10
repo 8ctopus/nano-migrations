@@ -4,62 +4,39 @@ declare(strict_types=1);
 
 namespace Demo;
 
-use Oct8pus\Migration\AbstractMigration;
+use Oct8pus\Migration\AbstractPDOMigration;
 use Oct8pus\Migration\MigrationException;
-use PDO;
-use Psr\Log\LoggerInterface;
 
-final class Migration extends AbstractMigration
+final class Migration extends AbstractPDOMigration
 {
-    private readonly PDO $db;
-
-    /**
-     * Constructor
-     *
-     * @param string               $file
-     * @param string               $host
-     * @param string               $user
-     * @param string               $pass
-     * @param string               $name
-     * @param LoggerInterface|null $logger
-     */
-    public function __construct(string $file, string $host, string $user, string $pass, string $name, ?LoggerInterface $logger = null)
-    {
-        parent::__construct($file, $logger);
-
-        $this->connect($host, $user, $pass, $name);
-    }
-
-    public function migrate(?int $count = null) : void
+    public function migrate(?int $count = null) : self
     {
         $this->logger?->debug(__FUNCTION__ . '...');
 
         parent::migrate($count);
 
         $this->logger?->notice(__FUNCTION__ . ' - OK');
+
+        return $this;
     }
 
-    public function rollback(int $count) : void
+    public function rollback(int $count) : self
     {
         $this->logger?->debug(__FUNCTION__ . '...');
 
         parent::rollback($count);
 
         $this->logger?->notice(__FUNCTION__ . ' - OK');
-    }
 
-    protected function query(string $sql) : void
-    {
-        $this->db->query($sql);
+        return $this;
     }
 
     protected function up1() : string
     {
         return <<<'SQL'
         CREATE TABLE user (
-            id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-            email VARCHAR(255) NOT NULL,
-            password VARCHAR(255) NOT NULL,
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
         SQL;
@@ -102,41 +79,48 @@ final class Migration extends AbstractMigration
         SQL;
     }
 
-    /**
-     * Connect to database
-     *
-     * @param string $host
-     * @param string $user
-     * @param string $pass
-     * @param string $name
-     *
-     * @return self
-     *
-     * @throws PDOException
-     */
-    private function connect(string $host, string $user, string $pass, string $name) : self
+    protected function up4() : string
     {
-        if (isset($this->db)) {
-            return $this;
-        }
+        return <<<'SQL'
+            ALTER TABLE users
+            ADD COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY BEFORE email
+        SQL;
+    }
 
-        $this->db = new PDO("mysql:host={$host};dbname={$name};charset=utf8", $user, $pass, [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
+    protected function down4() : string
+    {
+        return <<<'SQL'
+            ALTER TABLE users
+            DROP COLUMN id
+        SQL;
+    }
 
-        return $this;
+    protected function up5() : string
+    {
+        return <<<'SQL'
+            ALTER TABLE users
+            ALTER COLUMN email VARCHAR(40) NOT NULL,
+            ALTER COLUMN password VARCHAR(40) NOT NULL
+        SQL;
+    }
+
+    protected function down5() : string
+    {
+        return <<<'SQL'
+            ALTER TABLE users
+            ALTER COLUMN email TEXT NOT NULL,
+            ALTER COLUMN password TEXT NOT NULL
+        SQL;
     }
 
     /**
      * Safety check
      *
-     * @return void
+     * @return self
      *
      * @throws MigrationException
      */
-    protected function safetyCheck() : void
+    protected function safetyCheck() : self
     {
         $stdin = fopen('php://stdin', 'r');
 
@@ -150,7 +134,7 @@ final class Migration extends AbstractMigration
         fclose($stdin);
 
         if ($input === 'y') {
-            return;
+            return $this;
         }
 
         throw new MigrationException('safety check abort');

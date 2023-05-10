@@ -29,11 +29,11 @@ abstract class AbstractMigration
      *
      * @param ?int $count
      *
-     * @return void
+     * @return self
      *
      * @throws MigrationException|PDOException
      */
-    public function migrate(?int $count) : void
+    public function migrate(?int $count) : self
     {
         if (isset($count) && $count <= 0) {
             throw new MigrationException('migrate count must be > 0');
@@ -59,7 +59,7 @@ abstract class AbstractMigration
 
         if (\count($methods) === 0) {
             $this->logger?->debug(__FUNCTION__ . ' - CANCELED - nothing to migrate');
-            return;
+            return $this;
         }
 
         $this->safetyCheck();
@@ -91,11 +91,11 @@ abstract class AbstractMigration
      *
      * @param int $count
      *
-     * @return void
+     * @return self
      *
      * @throws MigrationException|PDOMigrationException
      */
-    public function rollback(int $count) : void
+    public function rollback(int $count) : self
     {
         if ($count <= 0) {
             throw new MigrationException('rollback count must be > 0');
@@ -122,7 +122,7 @@ abstract class AbstractMigration
 
         if (\count($methods) === 0) {
             $this->logger?->warning(__FUNCTION__ . ' - CANCELED - nothing to rollback');
-            return;
+            return $this;
         }
 
         $this->safetyCheck();
@@ -151,11 +151,11 @@ abstract class AbstractMigration
      *
      * @param  string $sql
      *
-     * @return void
+     * @return self
      */
-    abstract protected function query(string $sql) : void;
+    abstract protected function query(string $sql) : self;
 
-    abstract protected function safetyCheck() : void;
+    abstract protected function safetyCheck() : self;
 
     /**
      * Get class methods
