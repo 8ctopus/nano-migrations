@@ -35,6 +35,8 @@ abstract class AbstractMigration
      */
     public function migrate(?int $count) : self
     {
+        $this->logger?->notice(__FUNCTION__ . '...');
+
         if (isset($count) && $count <= 0) {
             throw new MigrationException('migrate count must be > 0');
         }
@@ -58,7 +60,7 @@ abstract class AbstractMigration
         }
 
         if (\count($methods) === 0) {
-            $this->logger?->debug(__FUNCTION__ . ' - CANCELED - nothing to migrate');
+            $this->logger?->info(__FUNCTION__ . ' - CANCELED - nothing to migrate');
             return $this;
         }
 
@@ -85,6 +87,8 @@ abstract class AbstractMigration
             }
         }
 
+        $this->logger?->notice(__FUNCTION__ . ' - OK');
+
         return $this;
     }
 
@@ -99,6 +103,8 @@ abstract class AbstractMigration
      */
     public function rollback(int $count) : self
     {
+        $this->logger?->notice(__FUNCTION__ . '...');
+
         if ($count <= 0) {
             throw new MigrationException('rollback count must be > 0');
         }
@@ -146,6 +152,8 @@ abstract class AbstractMigration
                 throw new MigrationException('save rollback');
             }
         }
+
+        $this->logger?->notice(__FUNCTION__ . ' - OK');
 
         return $this;
     }

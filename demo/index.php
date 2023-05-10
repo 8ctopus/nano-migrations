@@ -10,7 +10,8 @@ use Clue\Commander\Router;
 use Exception;
 
 require_once __DIR__ . '/../vendor/autoload.php';
-require_once __DIR__ . '/Migration.php';
+
+(new \NunoMaduro\Collision\Provider)->register();
 
 $logger = (new Stream('php://stdout'))
     // intercept logs that are >=
@@ -42,8 +43,9 @@ $router->add('migrate [<count>]', function (array $args) use ($migration) : void
     $migration->migrate($count);
 });
 
-$router->add('rollback <count>', function (array $args) use ($migration) : void {
-    $migration->rollback((int) $args['count']);
+$router->add('rollback [<count>]', function (array $args) use ($migration) : void {
+    $count = array_key_exists('count', $args) ? (int) $args['count'] : 0;
+    $migration->rollback($count);
 });
 
 // run router

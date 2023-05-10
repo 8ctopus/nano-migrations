@@ -9,28 +9,6 @@ use Oct8pus\Migration\MigrationException;
 
 final class Migration extends AbstractPDOMigration
 {
-    public function migrate(?int $count = null) : self
-    {
-        $this->logger?->notice(__FUNCTION__ . '...');
-
-        parent::migrate($count);
-
-        $this->logger?->notice(__FUNCTION__ . ' - OK');
-
-        return $this;
-    }
-
-    public function rollback(int $count) : self
-    {
-        $this->logger?->notice(__FUNCTION__ . '...');
-
-        parent::rollback($count);
-
-        $this->logger?->notice(__FUNCTION__ . ' - OK');
-
-        return $this;
-    }
-
     protected function up1() : string
     {
         return <<<'SQL'

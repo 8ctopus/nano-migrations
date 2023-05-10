@@ -11,15 +11,14 @@
             "email": "hello@octopuslabs.io"
         }
     ],
-    "require": {
-    },
     "require-dev": {
         "clue/commander": "^1.4",
         "8ctopus/apix-log": "^3",
         "phpunit/phpunit": "^9.0|^10.0",
         "friendsofphp/php-cs-fixer": "^3.4",
         "phpstan/phpstan": "^1.4",
-        "phpmd/phpmd": "^2.11"
+        "phpmd/phpmd": "^2.11",
+        "nunomaduro/collision": "^7.5"
     },
     "minimum-stability": "stable",
     "prefer-stable": true,
