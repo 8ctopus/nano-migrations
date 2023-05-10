@@ -15,16 +15,23 @@ use PDO;
 final class AbstractPDOMigrationTest extends TestCase
 {
     private static PDO $db;
+    private static string $engine;
 
     public static function setUpBeforeClass() : void
     {
         parent::setUpBeforeClass();
 
-        static::$db = new PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USER'], $_ENV['DB_PASS'], [
+        $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
+        ];
+
+        static::$engine = $_ENV['DB_ENGINE'] === 'mysql' ? 'mysql' : 'sqlite';
+
+        if (static::$engine === 'mysql') {
+            static::$db = new PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USER'], $_ENV['DB_PASS'], $options);
+        }
 
         static::$db->query('DROP TABLE IF EXISTS users');
         static::$db->query('DROP TABLE IF EXISTS user');
@@ -32,7 +39,7 @@ final class AbstractPDOMigrationTest extends TestCase
 
     public function testOK() : void
     {
-        $migration = (new PDOMigrationMock(static::$migrationsFile, $_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'], null))
+        $migration = (new PDOMigrationMock(static::$migrationsFile, static::$db, null))
             ->migrate(null);
 
         $result = static::$db->query('SHOW CREATE TABLE users');
@@ -69,7 +76,7 @@ final class AbstractPDOMigrationTest extends TestCase
 
     public function testWithMigrateCountOK() : void
     {
-        (new PDOMigrationMock(static::$migrationsFile, $_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'], null))
+        (new PDOMigrationMock(static::$migrationsFile, static::$db, null))
             ->migrate(6)
             ->rollback(99);
 
