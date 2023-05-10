@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Apix\Log\Logger\Runtime;
 use Oct8pus\Migration\AbstractPDOMigration;
-use Oct8pus\Migration\MigrationException;
 use PDO;
 
 /**
@@ -16,13 +14,11 @@ use PDO;
  */
 final class AbstractPDOMigrationTest extends TestCase
 {
-    private static string $migrationsFile;
     private static PDO $db;
 
     public static function setUpBeforeClass() : void
     {
-        static::$migrationsFile = sys_get_temp_dir() . '/phpunit-migrations.txt';
-        file_put_contents(static::$migrationsFile, '');
+        parent::setUpBeforeClass();
 
         static::$db = new PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USER'], $_ENV['DB_PASS'], [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -36,7 +32,7 @@ final class AbstractPDOMigrationTest extends TestCase
 
     public function testOK() : void
     {
-        $migration = (new MigrationMock(static::$migrationsFile, $_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'], null))
+        $migration = (new PDOMigrationMock(static::$migrationsFile, $_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'], null))
             ->migrate(null);
 
         $result = static::$db->query('SHOW CREATE TABLE users');
@@ -73,7 +69,7 @@ final class AbstractPDOMigrationTest extends TestCase
 
     public function testWithMigrateCountOK() : void
     {
-        (new MigrationMock(static::$migrationsFile, $_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'], null))
+        (new PDOMigrationMock(static::$migrationsFile, $_ENV['DB_HOST'], $_ENV['DB_USER'], $_ENV['DB_PASS'], $_ENV['DB_NAME'], null))
             ->migrate(6)
             ->rollback(99);
 
@@ -81,7 +77,7 @@ final class AbstractPDOMigrationTest extends TestCase
     }
 }
 
-class MigrationMock extends AbstractPDOMigration
+class PDOMigrationMock extends AbstractPDOMigration
 {
     protected function safetyCheck() : self
     {

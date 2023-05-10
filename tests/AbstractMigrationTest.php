@@ -15,14 +15,6 @@ use Oct8pus\Migration\MigrationException;
  */
 final class AbstractMigrationTest extends TestCase
 {
-    private static string $migrationsFile;
-
-    public static function setUpBeforeClass() : void
-    {
-        static::$migrationsFile = sys_get_temp_dir() . '/phpunit-migrations.txt';
-        file_put_contents(static::$migrationsFile, '');
-    }
-
     public function testOK() : void
     {
         (new MigrationMock(static::$migrationsFile, null))
@@ -99,6 +91,49 @@ final class AbstractMigrationTest extends TestCase
             ->rollback(99);
 
         static::assertStringContainsString('WARNING rollback - CANCELED - nothing to rollback', implode("\n", $logger->getItems()));
+    }
+
+    public function testMigrationsFileWrite() : void
+    {
+        static::expectException(MigrationException::class);
+        static::expectExceptionMessage('save migrations file');
+
+        $migration = (new MigrationMock(static::$migrationsFile, null));
+
+        $handle = fopen(static::$migrationsFile, 'c');
+        flock($handle, LOCK_EX);
+
+        try {
+            $migration
+                ->migrate(null);
+        } catch (MigrationException $exception) {
+            flock($handle, LOCK_UN);
+            fclose($handle);
+
+            throw $exception;
+        }
+    }
+
+    public function testMigrationsRollbackFileWrite() : void
+    {
+        static::expectException(MigrationException::class);
+        static::expectExceptionMessage('save migrations file');
+
+        $migration = (new MigrationMock(static::$migrationsFile, null));
+
+        $handle = fopen(static::$migrationsFile, 'c');
+        flock($handle, LOCK_EX);
+
+        try {
+            $migration
+                ->migrate(null)
+                ->rollback(1);
+        } catch (MigrationException $exception) {
+            flock($handle, LOCK_UN);
+            fclose($handle);
+
+            throw $exception;
+        }
     }
 }
 
