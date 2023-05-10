@@ -190,7 +190,7 @@ abstract class AbstractMigration
     /**
      * Load migrated methods
      *
-     * @param  resource $handle
+     * @param resource $handle
      *
      * @return array
      *
@@ -215,8 +215,8 @@ abstract class AbstractMigration
     /**
      * Save migrated methods
      *
-     * @param  resource $handle
-     * @param  array  $migrated
+     * @param resource $handle
+     * @param array    $migrated
      *
      * @return self
      *

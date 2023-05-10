@@ -44,7 +44,7 @@ final class AbstractPDOMigrationTest extends TestCase
         $result = static::$db->query('SHOW CREATE TABLE users');
         $output = $result->fetch();
 
-        $expected = <<<SQL
+        $expected = <<<'SQL'
         CREATE TABLE `users` (
           `id` int(11) NOT NULL AUTO_INCREMENT,
           `email` varchar(40) NOT NULL,
@@ -62,7 +62,7 @@ final class AbstractPDOMigrationTest extends TestCase
         $result = static::$db->query('SHOW CREATE TABLE user');
         $output = $result->fetch();
 
-        $expected = <<<SQL
+        $expected = <<<'SQL'
         CREATE TABLE `user` (
           `email` text NOT NULL,
           `password` text NOT NULL,

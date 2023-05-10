@@ -15,7 +15,7 @@ abstract class AbstractPDOMigration extends AbstractMigration
      * Constructor
      *
      * @param string           $file   - migrations file
-     * @param PDO $db
+     * @param PDO              $db
      * @param ?LoggerInterface $logger
      */
     public function __construct(string $file, PDO $db, ?LoggerInterface $logger = null)

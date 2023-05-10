@@ -27,7 +27,7 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         ];
 
         if ($_ENV['DB_ENGINE'] === 'sqlite') {
-            static::$db = new PDO("sqlite::memory:", null, null, $options);
+            static::$db = new PDO('sqlite::memory:', null, null, $options);
         } else {
             static::markTestSkipped('all tests in this file are invactive for this server configuration!');
         }
@@ -44,7 +44,7 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         $result = static::$db->query("SELECT sql FROM sqlite_schema WHERE name='users'");
         $output = $result->fetch();
 
-        $expected = <<<SQL
+        $expected = <<<'SQL'
         CREATE TABLE "users" (
             email TEXT NOT NULL,
             password TEXT NOT NULL,
@@ -59,7 +59,7 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         $result = static::$db->query("SELECT sql FROM sqlite_schema WHERE name='user'");
         $output = $result->fetch();
 
-        $expected = <<<SQL
+        $expected = <<<'SQL'
         CREATE TABLE "user" (
             email TEXT NOT NULL,
             password TEXT NOT NULL,
