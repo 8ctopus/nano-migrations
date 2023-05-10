@@ -11,7 +11,7 @@ final class Migration extends AbstractPDOMigration
 {
     public function migrate(?int $count = null) : self
     {
-        $this->logger?->debug(__FUNCTION__ . '...');
+        $this->logger?->notice(__FUNCTION__ . '...');
 
         parent::migrate($count);
 
@@ -22,7 +22,7 @@ final class Migration extends AbstractPDOMigration
 
     public function rollback(int $count) : self
     {
-        $this->logger?->debug(__FUNCTION__ . '...');
+        $this->logger?->notice(__FUNCTION__ . '...');
 
         parent::rollback($count);
 
@@ -83,7 +83,8 @@ final class Migration extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE users
-            ADD COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY BEFORE email
+            ADD COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER email,
+            MODIFY COLUMN email TEXT NOT NULL AFTER id
         SQL;
     }
 
@@ -99,8 +100,8 @@ final class Migration extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE users
-            ALTER COLUMN email VARCHAR(40) NOT NULL,
-            ALTER COLUMN password VARCHAR(40) NOT NULL
+            MODIFY COLUMN email VARCHAR(40) NOT NULL,
+            MODIFY COLUMN password VARCHAR(40) NOT NULL
         SQL;
     }
 
@@ -108,8 +109,8 @@ final class Migration extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE users
-            ALTER COLUMN email TEXT NOT NULL,
-            ALTER COLUMN password TEXT NOT NULL
+            MODIFY COLUMN email TEXT NOT NULL,
+            MODIFY COLUMN password TEXT NOT NULL
         SQL;
     }
 
@@ -128,7 +129,7 @@ final class Migration extends AbstractPDOMigration
             throw new MigrationException('fopen');
         }
 
-        $this->logger?->notice('Confirm action (y/n): ');
+        $this->logger?->warning('Confirm action (y/n): ');
         $input = trim(fgets($stdin));
 
         fclose($stdin);
