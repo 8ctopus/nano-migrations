@@ -41,6 +41,8 @@ abstract class AbstractMigration
             throw new MigrationException('migration count must be greater than zero');
         }
 
+        $handle = $this->open();
+
         // get already processed methods
         $migrated = $this->migrated($handle);
 
@@ -100,6 +102,8 @@ abstract class AbstractMigration
         if ($count <= 0) {
             throw new MigrationException('rollback count must be greater than zero');
         }
+
+        $handle = $this->open();
 
         // get all migrations
         $migrated = $this->migrated($handle);
@@ -171,6 +175,28 @@ abstract class AbstractMigration
     abstract protected function safetyCheck() : self;
 
     /**
+     * Open file
+     *
+     * @return resource
+     *
+     * @throws MigrationException
+     */
+    private function open()
+    {
+        if (!file_exists($this->file)) {
+            throw new MigrationException('migration file does not exist');
+        }
+
+        $handle = @fopen($this->file, 'r+', false);
+
+        if ($handle !== false) {
+            return $handle;
+        }
+
+        throw new MigrationException('open migrations file');
+    }
+
+    /**
      * Get migrated methods
      *
      * @param  resource $handle
@@ -179,18 +205,8 @@ abstract class AbstractMigration
      *
      * @throws MigrationException
      */
-    private function migrated(&$handle) : array
+    private function migrated($handle) : array
     {
-        if (!file_exists($this->file)) {
-            throw new MigrationException('migration file does not exist');
-        }
-
-        $handle = @fopen($this->file, 'r+', false);
-
-        if ($handle === false) {
-            throw new MigrationException('open migrations file');
-        }
-
         $size = fstat($handle)['size'];
 
         $content = ($size > 0) ? fread($handle, $size) : '';
