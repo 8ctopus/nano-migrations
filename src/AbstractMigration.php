@@ -15,7 +15,7 @@ abstract class AbstractMigration
     /**
      * Constructor
      *
-     * @param string               $file migration file
+     * @param string               $file - migration file
      * @param LoggerInterface|null $logger
      */
     public function __construct(string $file, ?LoggerInterface $logger = null)
