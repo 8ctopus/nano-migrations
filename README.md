@@ -16,22 +16,85 @@ A tiny database migration package
 - run `composer install`
 - create the migrations file `touch demo/migrations.txt`
 - start Docker Desktop and `docker-compose up &`
+- to migrate
 
-### commands
+    `php demo/index.php migrate [<count:int>]`
 
-To migrate
+- to rollback
 
-    php demo/index.php migrate [<count:int>]
-
-To rollback
-
-    php demo/index.php rollback <count:int>
+    `php demo/index.php rollback <count:int>`
 
 ## install
 
     composer require 8ctopus/nano-migration
 
-You will need to extend the `AbstractMigration` class. See the demo on how to do so.
+You will need to extend `AbstractPDOMigration` class if you use php `PDO`. Extending the class requires implementing the `up` and `down` migration methods and the potential safety check. Refer to the demo directory example.
+
+```php
+final class Migration extends AbstractPDOMigration
+{
+    protected function up1() : string
+    {
+        return <<<'SQL'
+        CREATE TABLE user (
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+        SQL;
+    }
+
+    protected function down1() : string
+    {
+        return <<<'SQL'
+        DROP TABLE IF EXISTS user
+        SQL;
+    }
+
+    protected function up2() : string
+    {
+        ...
+    }
+
+    protected function down2() : string
+    {
+        ...
+    }
+
+    /**
+     * Safety check
+     *
+     * @return self
+     *
+     * @throws MigrationException
+     */
+    protected function safetyCheck() : self
+    {
+        $stdin = fopen('php://stdin', 'r', false);
+
+        if ($stdin === false) {
+            throw new MigrationException('fopen');
+        }
+
+        $this->logger?->warning('Confirm action (y/n): ');
+        $input = trim(fgets($stdin));
+
+        fclose($stdin);
+
+        if ($input === 'y') {
+            return $this;
+        }
+
+        throw new MigrationException('safety check abort');
+    }
+}
+```
+
+For other database engines, extend the `AbstractMigration` class and implement:
+
+- `up` and `down` methods
+- database connection
+- database query
 
 ## clean code
 
