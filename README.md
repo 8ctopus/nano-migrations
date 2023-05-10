@@ -15,12 +15,15 @@ A tiny database migration package
 - git clone the repository
 - run `composer install`
 - create the migrations file `touch demo/migrations.txt`
-- run `php demo/index.php migrate` to migrate
-- run `php demo/index.php rollback 1` to rollback the last migration
+- start Docker Desktop and `docker-compose up &`
 
 ### commands
 
+To migrate
+
     php demo/index.php migrate [<count:int>]
+
+To rollback
 
     php demo/index.php rollback <count:int>
 
@@ -28,7 +31,7 @@ A tiny database migration package
 
     composer require 8ctopus/nano-migration
 
-You will need to extend the `AbstractMigration` class.
+You will need to extend the `AbstractMigration` class. See the demo on how to do so.
 
 ## clean code
 
