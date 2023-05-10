@@ -14,6 +14,7 @@ A tiny database migration package
 
 - git clone the repository
 - run `composer install`
+- create the migrations file `touch demo/migrations.txt`
 - run `php demo/index.php migrate` to migrate
 - run `php demo/index.php rollback 1` to rollback the last migration
 
