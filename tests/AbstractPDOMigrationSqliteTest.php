@@ -27,7 +27,7 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         ];
 
         if ($_ENV['DB_ENGINE'] === 'sqlite') {
-            static::$db = new PDO("sqlite:memory", null, null, $options);
+            static::$db = new PDO("sqlite::memory:", null, null, $options);
         } else {
             static::markTestSkipped('all tests in this file are invactive for this server configuration!');
         }
@@ -41,36 +41,33 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         $migration = (new SqliteMigrationMock(static::$migrationsFile, static::$db, null))
             ->migrate(null);
 
-        $result = static::$db->query('.schema users');
+        $result = static::$db->query("SELECT sql FROM sqlite_schema WHERE name='users'");
         $output = $result->fetch();
 
         $expected = <<<SQL
-        CREATE TABLE `users` (
-          `id` int(11) NOT NULL AUTO_INCREMENT,
-          `email` varchar(40) NOT NULL,
-          `firstName` varchar(255) NOT NULL,
-          `password` varchar(40) NOT NULL,
-          `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-          PRIMARY KEY (`id`)
-        ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
+        CREATE TABLE "users" (
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        , firstName VARCHAR(255) NOT NULL, lastName VARCHAR(40) NOT NULL, blocked BIT DEFAULT false)
         SQL;
 
-        static::assertEquals($expected, $output['Create Table']);
+        static::assertEquals($expected, $output['sql']);
 
         $migration->rollback(4);
 
-        $result = static::$db->query('.schema user');
+        $result = static::$db->query("SELECT sql FROM sqlite_schema WHERE name='user'");
         $output = $result->fetch();
 
         $expected = <<<SQL
-        CREATE TABLE `user` (
-          `email` text NOT NULL,
-          `password` text NOT NULL,
-          `created_at` timestamp NOT NULL DEFAULT current_timestamp()
-        ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci
+        CREATE TABLE "user" (
+            email TEXT NOT NULL,
+            password TEXT NOT NULL,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
         SQL;
 
-        static::assertEquals($expected, $output['Create Table']);
+        static::assertEquals($expected, $output['sql']);
     }
 
     public function testWithMigrateCountOK() : void
