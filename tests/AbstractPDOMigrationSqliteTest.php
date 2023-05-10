@@ -12,7 +12,7 @@ use PDO;
  *
  * @covers \Oct8pus\Migration\AbstractPDOMigration
  */
-final class AbstractPDOMigrationTest extends TestCase
+final class AbstractPDOMigrationSqliteTest extends TestCase
 {
     private static PDO $db;
 
@@ -26,8 +26,8 @@ final class AbstractPDOMigrationTest extends TestCase
             PDO::ATTR_EMULATE_PREPARES => false,
         ];
 
-        if ($_ENV['DB_ENGINE'] === 'mysql') {
-            static::$db = new PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USER'], $_ENV['DB_PASS'], $options);
+        if ($_ENV['DB_ENGINE'] === 'sqlite') {
+            static::$db = new PDO("sqlite:memory", null, null, $options);
         } else {
             static::markTestSkipped('all tests in this file are invactive for this server configuration!');
         }
@@ -38,10 +38,10 @@ final class AbstractPDOMigrationTest extends TestCase
 
     public function testOK() : void
     {
-        $migration = (new PDOMigrationMock(static::$migrationsFile, static::$db, null))
+        $migration = (new SqliteMigrationMock(static::$migrationsFile, static::$db, null))
             ->migrate(null);
 
-        $result = static::$db->query('SHOW CREATE TABLE users');
+        $result = static::$db->query('.schema users');
         $output = $result->fetch();
 
         $expected = <<<SQL
@@ -59,7 +59,7 @@ final class AbstractPDOMigrationTest extends TestCase
 
         $migration->rollback(4);
 
-        $result = static::$db->query('SHOW CREATE TABLE user');
+        $result = static::$db->query('.schema user');
         $output = $result->fetch();
 
         $expected = <<<SQL
@@ -75,7 +75,7 @@ final class AbstractPDOMigrationTest extends TestCase
 
     public function testWithMigrateCountOK() : void
     {
-        (new PDOMigrationMock(static::$migrationsFile, static::$db, null))
+        (new SqliteMigrationMock(static::$migrationsFile, static::$db, null))
             ->migrate(6)
             ->rollback(99);
 
@@ -83,7 +83,7 @@ final class AbstractPDOMigrationTest extends TestCase
     }
 }
 
-class PDOMigrationMock extends AbstractPDOMigration
+class SqliteMigrationMock extends AbstractPDOMigration
 {
     protected function safetyCheck() : self
     {
@@ -112,7 +112,7 @@ class PDOMigrationMock extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE user
-            ADD COLUMN firstName VARCHAR(255) NOT NULL AFTER email
+            ADD COLUMN firstName VARCHAR(255) NOT NULL
         SQL;
     }
 
@@ -127,14 +127,14 @@ class PDOMigrationMock extends AbstractPDOMigration
     protected function up3() : string
     {
         return <<<'SQL'
-            ALTER TABLE user RENAME users
+            ALTER TABLE user RENAME TO users
         SQL;
     }
 
     protected function down3() : string
     {
         return <<<'SQL'
-            ALTER TABLE users RENAME user
+            ALTER TABLE users RENAME TO user
         SQL;
     }
 
@@ -142,8 +142,7 @@ class PDOMigrationMock extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE users
-            ADD COLUMN id INT NOT NULL AUTO_INCREMENT PRIMARY KEY AFTER email,
-            MODIFY COLUMN email TEXT NOT NULL AFTER id
+            ADD COLUMN lastName VARCHAR(40) NOT NULL
         SQL;
     }
 
@@ -151,7 +150,7 @@ class PDOMigrationMock extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE users
-            DROP COLUMN id
+            DROP COLUMN lastName
         SQL;
     }
 
@@ -159,8 +158,7 @@ class PDOMigrationMock extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE users
-            MODIFY COLUMN email VARCHAR(40) NOT NULL,
-            MODIFY COLUMN password VARCHAR(40) NOT NULL
+            ADD COLUMN blocked BIT DEFAULT false
         SQL;
     }
 
@@ -168,8 +166,7 @@ class PDOMigrationMock extends AbstractPDOMigration
     {
         return <<<'SQL'
             ALTER TABLE users
-            MODIFY COLUMN email TEXT NOT NULL,
-            MODIFY COLUMN password TEXT NOT NULL
+            DROP COLUMN blocked
         SQL;
     }
 }
