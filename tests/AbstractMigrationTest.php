@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests;
 
 use Apix\Log\Logger\Runtime;
+use Exception;
 use Oct8pus\Migration\AbstractMigration;
 use Oct8pus\Migration\MigrationException;
 
@@ -111,7 +112,9 @@ final class AbstractMigrationTest extends TestCase
         $migration = (new MigrationMock(static::$migrationsFile, null));
 
         $handle = fopen(static::$migrationsFile, 'r+');
-        flock($handle, LOCK_EX);
+        if (!flock($handle, LOCK_EX)) {
+            throw new Exception('lock file');
+        }
 
         try {
             $migration
@@ -132,7 +135,9 @@ final class AbstractMigrationTest extends TestCase
         $migration = (new MigrationMock(static::$migrationsFile, null));
 
         $handle = fopen(static::$migrationsFile, 'r+');
-        flock($handle, LOCK_EX);
+        if (!flock($handle, LOCK_EX)) {
+            throw new Exception('lock file');
+        }
 
         try {
             $migration
