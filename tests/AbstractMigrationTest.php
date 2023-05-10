@@ -62,6 +62,16 @@ final class AbstractMigrationTest extends TestCase
             ->rollback(99);
     }
 
+    public function testMigrationsFileInvalid() : void
+    {
+        static::expectException(MigrationException::class);
+        static::expectExceptionMessage('open migrations file');
+
+        (new MigrationMock(sys_get_temp_dir() . '/.', null))
+            ->migrate(1)
+            ->rollback(99);
+    }
+
     public function testRollbackFileDoesNotExist() : void
     {
         static::expectException(MigrationException::class);

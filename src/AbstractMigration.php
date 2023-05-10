@@ -41,29 +41,11 @@ abstract class AbstractMigration
             throw new MigrationException('migration count must be greater than zero');
         }
 
-        if (!file_exists($this->file)) {
-            throw new MigrationException('migration file does not exist');
-        }
+        // get already processed methods
+        $migrated = $this->migrated($handle);
 
         // get up methods
         $methods = $this->methods('up');
-
-        // get already processed methods
-        $handle = fopen($this->file, 'r+', false);
-
-        if ($handle === false) {
-            throw new MigrationException('open migrations file');
-        }
-
-        $size = fstat($handle)['size'];
-
-        $content = ($size > 0) ? fread($handle, $size) : '';
-
-        if ($content === false) {
-            throw new MigrationException('read migrations file');
-        }
-
-        $migrated = explode("\n", $content);
 
         // get not migrated methods
         $methods = array_diff($methods, $migrated);
@@ -119,25 +101,8 @@ abstract class AbstractMigration
             throw new MigrationException('rollback count must be greater than zero');
         }
 
-        if (!file_exists($this->file)) {
-            throw new MigrationException('migration file does not exist');
-        }
-
         // get all migrations
-        $handle = fopen($this->file, 'r+', false);
-        $size = fstat($handle)['size'];
-
-        if ($handle === false) {
-            throw new MigrationException('open migrations file');
-        }
-
-        $content = ($size > 0) ? fread($handle, $size) : '';
-
-        if ($content === false) {
-            throw new MigrationException('read migrations file');
-        }
-
-        $migrated = explode("\n", $content);
+        $migrated = $this->migrated($handle);
 
         // remove empty values
         $migrated = array_filter($migrated);
@@ -204,6 +169,38 @@ abstract class AbstractMigration
      * @throws MigrationException
      */
     abstract protected function safetyCheck() : self;
+
+    /**
+     * Get migrated methods
+     *
+     * @param  resource $handle
+     *
+     * @return array
+     *
+     * @throws MigrationException
+     */
+    private function migrated(&$handle) : array
+    {
+        if (!file_exists($this->file)) {
+            throw new MigrationException('migration file does not exist');
+        }
+
+        $handle = @fopen($this->file, 'r+', false);
+
+        if ($handle === false) {
+            throw new MigrationException('open migrations file');
+        }
+
+        $size = fstat($handle)['size'];
+
+        $content = ($size > 0) ? fread($handle, $size) : '';
+
+        if ($content === false) {
+            throw new MigrationException('read migrations file');
+        }
+
+        return explode("\n", $content);
+    }
 
     /**
      * Get class methods
