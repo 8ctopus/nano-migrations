@@ -11,6 +11,10 @@
             "email": "hello@octopuslabs.io"
         }
     ],
+    "require": {
+        "php": ">=8.0",
+        "psr/log": "^1.1.4|^2.0|^3.0"
+    },
     "require-dev": {
         "clue/commander": "^1.4",
         "8ctopus/apix-log": "^3",
