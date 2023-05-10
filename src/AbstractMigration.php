@@ -44,7 +44,7 @@ abstract class AbstractMigration
         $handle = $this->open();
 
         // get already processed methods
-        $migrated = $this->migrated($handle);
+        $migrated = $this->loadMigrated($handle);
 
         // get up methods
         $methods = $this->methods('up');
@@ -74,9 +74,9 @@ abstract class AbstractMigration
 
             $this->logger?->info("{$method} - OK");
 
-            if (@fwrite($handle, $method . "\n") === false) {
-                throw new MigrationException('save migrations file');
-            }
+            $migrated[] = $method;
+
+            $this->saveMigrated($handle, $migrated);
         }
 
         fclose($handle);
@@ -106,10 +106,7 @@ abstract class AbstractMigration
         $handle = $this->open();
 
         // get all migrations
-        $migrated = $this->migrated($handle);
-
-        // remove empty values
-        $migrated = array_filter($migrated);
+        $migrated = $this->loadMigrated($handle);
 
         // get migrations to rollback
         $rollback = \array_slice($migrated, -$count, $count);
@@ -140,13 +137,7 @@ abstract class AbstractMigration
             $migrated = array_values(array_diff($migrated, [str_replace('down', 'up', $method)]));
 
             // save rollback
-            if (!ftruncate($handle, 0)) {
-                throw new MigrationException('truncate migrations file');
-            }
-
-            if (fwrite($handle, implode("\n", $migrated)) === false) {
-                throw new MigrationException('save migrations file');
-            }
+            $this->saveMigrated($handle, $migrated);
         }
 
         fclose($handle);
@@ -197,7 +188,7 @@ abstract class AbstractMigration
     }
 
     /**
-     * Get migrated methods
+     * Load migrated methods
      *
      * @param  resource $handle
      *
@@ -205,7 +196,7 @@ abstract class AbstractMigration
      *
      * @throws MigrationException
      */
-    private function migrated($handle) : array
+    private function loadMigrated($handle) : array
     {
         $size = fstat($handle)['size'];
 
@@ -215,7 +206,37 @@ abstract class AbstractMigration
             throw new MigrationException('read migrations file');
         }
 
-        return explode("\n", $content);
+        $migrated = explode("\n", $content);
+
+        // remove empty values
+        return array_filter($migrated);
+    }
+
+    /**
+     * Save migrated methods
+     *
+     * @param  resource $handle
+     * @param  array  $migrated
+     *
+     * @return self
+     *
+     * @throws MigrationException
+     */
+    private function saveMigrated($handle, array $migrated) : self
+    {
+        if (fseek($handle, 0, SEEK_SET) !== 0) {
+            throw new MigrationException('seek migrations file');
+        }
+
+        if (!ftruncate($handle, 0)) {
+            throw new MigrationException('truncate migrations file');
+        }
+
+        if (fwrite($handle, implode("\n", $migrated)) === false) {
+            throw new MigrationException('save migrations file');
+        }
+
+        return $this;
     }
 
     /**
