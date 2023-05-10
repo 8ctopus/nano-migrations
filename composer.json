@@ -1,8 +1,8 @@
 {
-    "name": "8ctopus/migration",
+    "name": "8ctopus/nano-migrations",
     "type": "library",
     "description": "Automate database migrations",
-    "keywords": ["database", "migration"],
+    "keywords": ["database", "migration", "PDO"],
     "homepage": "https://github.com/8ctopus/migration",
     "license": "MIT",
     "authors": [
