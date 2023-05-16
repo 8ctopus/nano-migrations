@@ -18,20 +18,20 @@ final class AbstractMigrationTest extends TestCase
 {
     public function testOK() : void
     {
-        (new MigrationMock(static::$migrationsFile, null))
+        $migration = (new MigrationMock(static::$migrationsFile, null))
             ->migrate(null)
             ->rollback(99);
 
-        static::assertTrue(true);
+        static::assertSame(5, $migration->count());
     }
 
     public function testWithMigrateCountOK() : void
     {
-        (new MigrationMock(static::$migrationsFile, null))
+        $migration = (new MigrationMock(static::$migrationsFile, null))
             ->migrate(6)
             ->rollback(99);
 
-        static::assertTrue(true);
+        static::assertSame(5, $migration->count());
     }
 
     public function testMigrationsCount() : void
@@ -149,6 +149,26 @@ final class AbstractMigrationTest extends TestCase
 
             throw $exception;
         }
+    }
+
+    public function testMigrationFileContainsExtraLines() : void
+    {
+        file_put_contents(static::$migrationsFile, "\n\n\nup1\nup2\n\n");
+
+        $migration = (new MigrationMock(static::$migrationsFile, null))
+            ->migrate(null);
+
+        static::assertSame(3, $migration->count());
+    }
+
+    public function testMigrationFileContainsWindowsNewLines() : void
+    {
+        file_put_contents(static::$migrationsFile, "up1\r\nup2\r\n");
+
+        $migration = (new MigrationMock(static::$migrationsFile, null))
+            ->migrate(null);
+
+        static::assertSame(3, $migration->count());
     }
 }
 

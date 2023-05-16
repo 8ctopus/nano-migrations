@@ -8,6 +8,8 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractMigration
 {
+    protected int $count;
+
     protected readonly ?LoggerInterface $logger;
 
     private readonly string $file;
@@ -64,6 +66,8 @@ abstract class AbstractMigration
 
         $this->safetyCheck();
 
+        $this->count = 0;
+
         // go through all methods
         foreach ($methods as $method) {
             $this->logger?->info("{$method}...");
@@ -77,6 +81,8 @@ abstract class AbstractMigration
             $migrated[] = $method;
 
             $this->saveMigrated($handle, $migrated);
+
+            $this->count += 1;
         }
 
         fclose($handle);
@@ -124,6 +130,8 @@ abstract class AbstractMigration
 
         $this->safetyCheck();
 
+        $this->count = 0;
+
         // rollback
         foreach ($methods as $method) {
             $this->logger?->info("{$method}...");
@@ -138,6 +146,8 @@ abstract class AbstractMigration
 
             // save rollback
             $this->saveMigrated($handle, $migrated);
+
+            $this->count += 1;
         }
 
         fclose($handle);
@@ -145,6 +155,11 @@ abstract class AbstractMigration
         $this->logger?->notice(__FUNCTION__ . ' - OK');
 
         return $this;
+    }
+
+    public function count() : ?int
+    {
+        return $this->count;
     }
 
     /**
@@ -210,6 +225,8 @@ abstract class AbstractMigration
         if ($content === false) {
             throw new MigrationException('read migrations file');
         }
+
+        $content = str_replace("\r", '', $content);
 
         $migrated = explode("\n", $content);
 
