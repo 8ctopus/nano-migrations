@@ -86,10 +86,11 @@ final class AbstractMigrationTest extends TestCase
     {
         $logger = new Runtime();
 
-        (new MigrationMock(static::$migrationsFile, $logger))
+        $migration = (new MigrationMock(static::$migrationsFile, $logger))
             ->migrate(null)
             ->migrate(null);
 
+        static::assertEquals(0, $migration->count());
         static::assertStringContainsString('INFO migrate - CANCELED - nothing to migrate', implode("\n", $logger->getItems()));
     }
 
@@ -97,10 +98,11 @@ final class AbstractMigrationTest extends TestCase
     {
         $logger = new Runtime();
 
-        (new MigrationMock(static::$migrationsFile, $logger))
+        $migration = (new MigrationMock(static::$migrationsFile, $logger))
             ->rollback(99)
             ->rollback(99);
 
+        static::assertEquals(0, $migration->count());
         static::assertStringContainsString('WARNING rollback - CANCELED - nothing to rollback', implode("\n", $logger->getItems()));
     }
 
@@ -112,6 +114,7 @@ final class AbstractMigrationTest extends TestCase
         $migration = (new MigrationMock(static::$migrationsFile, null));
 
         $handle = fopen(static::$migrationsFile, 'r+');
+
         if (!flock($handle, LOCK_EX)) {
             throw new Exception('lock file');
         }

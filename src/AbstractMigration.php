@@ -39,6 +39,8 @@ abstract class AbstractMigration
     {
         $this->logger?->notice(__FUNCTION__ . '...');
 
+        $this->count = 0;
+
         if (isset($count) && $count <= 0) {
             throw new MigrationException('migration count must be greater than zero');
         }
@@ -65,8 +67,6 @@ abstract class AbstractMigration
         }
 
         $this->safetyCheck();
-
-        $this->count = 0;
 
         // go through all methods
         foreach ($methods as $method) {
@@ -105,6 +105,8 @@ abstract class AbstractMigration
     {
         $this->logger?->notice(__FUNCTION__ . '...');
 
+        $this->count = 0;
+
         if ($count <= 0) {
             throw new MigrationException('rollback count must be greater than zero');
         }
@@ -129,8 +131,6 @@ abstract class AbstractMigration
         }
 
         $this->safetyCheck();
-
-        $this->count = 0;
 
         // rollback
         foreach ($methods as $method) {

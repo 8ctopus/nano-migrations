@@ -72,11 +72,11 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
 
     public function testWithMigrateCountOK() : void
     {
-        (new SqliteMigrationMock(static::$migrationsFile, static::$db, null))
+        $migration = (new SqliteMigrationMock(static::$migrationsFile, static::$db, null))
             ->migrate(6)
             ->rollback(99);
 
-        static::assertTrue(true);
+        static::assertSame(5, $migration->count());
     }
 }
 
