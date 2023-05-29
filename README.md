@@ -28,7 +28,7 @@ Migrations are used to manage database schema changes over time. The rationale b
 
 ## install
 
-    composer require 8ctopus/nano-migrationss
+    composer require 8ctopus/nano-migrations
 
 You will need to extend `AbstractPDOMigration` class if you use php `PDO`. Extending the class requires implementing the `up` and `down` migration methods and the potential safety check. Refer to the demo directory example.
 
