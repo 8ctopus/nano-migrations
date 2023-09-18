@@ -27,21 +27,21 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         ];
 
         if ($_ENV['DB_ENGINE'] === 'sqlite') {
-            static::$db = new PDO('sqlite::memory:', null, null, $options);
+            self::$db = new PDO('sqlite::memory:', null, null, $options);
         } else {
-            static::markTestSkipped('all tests in this file are invactive for this server configuration!');
+            self::markTestSkipped('all tests in this file are invactive for this server configuration!');
         }
 
-        static::$db->query('DROP TABLE IF EXISTS users');
-        static::$db->query('DROP TABLE IF EXISTS user');
+        self::$db->query('DROP TABLE IF EXISTS users');
+        self::$db->query('DROP TABLE IF EXISTS user');
     }
 
     public function testOK() : void
     {
-        $migration = (new SqliteMigrationMock(static::$migrationsFile, static::$db, null))
+        $migration = (new SqliteMigrationMock(self::$migrationsFile, self::$db, null))
             ->migrate(null);
 
-        $result = static::$db->query("SELECT sql FROM sqlite_schema WHERE name='users'");
+        $result = self::$db->query("SELECT sql FROM sqlite_schema WHERE name='users'");
         $output = $result->fetch();
 
         $expected = <<<'SQL'
@@ -52,11 +52,11 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         , firstName VARCHAR(255) NOT NULL, lastName VARCHAR(40) NOT NULL, blocked BIT DEFAULT false)
         SQL;
 
-        static::assertEquals($expected, $output['sql']);
+        self::assertEquals($expected, $output['sql']);
 
         $migration->rollback(4);
 
-        $result = static::$db->query("SELECT sql FROM sqlite_schema WHERE name='user'");
+        $result = self::$db->query("SELECT sql FROM sqlite_schema WHERE name='user'");
         $output = $result->fetch();
 
         $expected = <<<'SQL'
@@ -67,16 +67,16 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         )
         SQL;
 
-        static::assertEquals($expected, $output['sql']);
+        self::assertEquals($expected, $output['sql']);
     }
 
     public function testWithMigrateCountOK() : void
     {
-        $migration = (new SqliteMigrationMock(static::$migrationsFile, static::$db, null))
+        $migration = (new SqliteMigrationMock(self::$migrationsFile, self::$db, null))
             ->migrate(6)
             ->rollback(99);
 
-        static::assertSame(5, $migration->count());
+        self::assertSame(5, $migration->count());
     }
 }
 

@@ -27,21 +27,21 @@ final class AbstractPDOMigrationTest extends TestCase
         ];
 
         if ($_ENV['DB_ENGINE'] === 'mysql') {
-            static::$db = new PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USER'], $_ENV['DB_PASS'], $options);
+            self::$db = new PDO("mysql:host={$_ENV['DB_HOST']};dbname={$_ENV['DB_NAME']};charset=utf8", $_ENV['DB_USER'], $_ENV['DB_PASS'], $options);
         } else {
-            static::markTestSkipped('all tests in this file are invactive for this server configuration!');
+            self::markTestSkipped('all tests in this file are invactive for this server configuration!');
         }
 
-        static::$db->query('DROP TABLE IF EXISTS users');
-        static::$db->query('DROP TABLE IF EXISTS user');
+        self::$db->query('DROP TABLE IF EXISTS users');
+        self::$db->query('DROP TABLE IF EXISTS user');
     }
 
     public function testOK() : void
     {
-        $migration = (new PDOMigrationMock(static::$migrationsFile, static::$db, null))
+        $migration = (new PDOMigrationMock(self::$migrationsFile, self::$db, null))
             ->migrate(null);
 
-        $result = static::$db->query('SHOW CREATE TABLE users');
+        $result = self::$db->query('SHOW CREATE TABLE users');
         $output = $result->fetch();
 
         $expected = <<<'SQL'
@@ -55,11 +55,11 @@ final class AbstractPDOMigrationTest extends TestCase
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
         SQL;
 
-        static::assertEquals($expected, $output['Create Table']);
+        self::assertEquals($expected, $output['Create Table']);
 
         $migration->rollback(4);
 
-        $result = static::$db->query('SHOW CREATE TABLE user');
+        $result = self::$db->query('SHOW CREATE TABLE user');
         $output = $result->fetch();
 
         $expected = <<<'SQL'
@@ -70,16 +70,16 @@ final class AbstractPDOMigrationTest extends TestCase
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
         SQL;
 
-        static::assertEquals($expected, $output['Create Table']);
+        self::assertEquals($expected, $output['Create Table']);
     }
 
     public function testWithMigrateCountOK() : void
     {
-        $migration = (new PDOMigrationMock(static::$migrationsFile, static::$db, null))
+        $migration = (new PDOMigrationMock(self::$migrationsFile, self::$db, null))
             ->migrate(6)
             ->rollback(99);
 
-        static::assertSame(5, $migration->count());
+        self::assertSame(5, $migration->count());
     }
 }
 

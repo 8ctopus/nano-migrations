@@ -18,45 +18,45 @@ final class AbstractMigrationTest extends TestCase
 {
     public function testOK() : void
     {
-        $migration = (new MigrationMock(static::$migrationsFile, null))
+        $migration = (new MigrationMock(self::$migrationsFile, null))
             ->migrate(null)
             ->rollback(99);
 
-        static::assertSame(5, $migration->count());
+        self::assertSame(5, $migration->count());
     }
 
     public function testWithMigrateCountOK() : void
     {
-        $migration = (new MigrationMock(static::$migrationsFile, null))
+        $migration = (new MigrationMock(self::$migrationsFile, null))
             ->migrate(6)
             ->rollback(99);
 
-        static::assertSame(5, $migration->count());
+        self::assertSame(5, $migration->count());
     }
 
     public function testMigrationsCount() : void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('migration count must be greater than zero');
+        self::expectException(MigrationException::class);
+        self::expectExceptionMessage('migration count must be greater than zero');
 
-        (new MigrationMock(static::$migrationsFile, null))
+        (new MigrationMock(self::$migrationsFile, null))
             ->migrate(0)
             ->rollback(99);
     }
 
     public function testRollbackCount() : void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('rollback count must be greater than zero');
+        self::expectException(MigrationException::class);
+        self::expectExceptionMessage('rollback count must be greater than zero');
 
-        (new MigrationMock(static::$migrationsFile, null))
+        (new MigrationMock(self::$migrationsFile, null))
             ->rollback(0);
     }
 
     public function testMigrationsFileDoesNotExist() : void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('migration file does not exist');
+        self::expectException(MigrationException::class);
+        self::expectExceptionMessage('migration file does not exist');
 
         (new MigrationMock(sys_get_temp_dir() . '/phpunit-migrations-not-exist.txt', null))
             ->migrate(1)
@@ -65,8 +65,8 @@ final class AbstractMigrationTest extends TestCase
 
     public function testMigrationsFileInvalid() : void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('open migrations file');
+        self::expectException(MigrationException::class);
+        self::expectExceptionMessage('open migrations file');
 
         (new MigrationMock(sys_get_temp_dir() . '/.', null))
             ->migrate(1)
@@ -75,8 +75,8 @@ final class AbstractMigrationTest extends TestCase
 
     public function testRollbackFileDoesNotExist() : void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('migration file does not exist');
+        self::expectException(MigrationException::class);
+        self::expectExceptionMessage('migration file does not exist');
 
         (new MigrationMock(sys_get_temp_dir() . '/phpunit-migrations-not-exist.txt', null))
             ->rollback(1);
@@ -86,34 +86,34 @@ final class AbstractMigrationTest extends TestCase
     {
         $logger = new Runtime();
 
-        $migration = (new MigrationMock(static::$migrationsFile, $logger))
+        $migration = (new MigrationMock(self::$migrationsFile, $logger))
             ->migrate(null)
             ->migrate(null);
 
-        static::assertEquals(0, $migration->count());
-        static::assertStringContainsString('INFO migrate - CANCELED - nothing to migrate', implode("\n", $logger->getItems()));
+        self::assertEquals(0, $migration->count());
+        self::assertStringContainsString('INFO migrate - CANCELED - nothing to migrate', implode("\n", $logger->getItems()));
     }
 
     public function testNothingToRollback() : void
     {
         $logger = new Runtime();
 
-        $migration = (new MigrationMock(static::$migrationsFile, $logger))
+        $migration = (new MigrationMock(self::$migrationsFile, $logger))
             ->rollback(99)
             ->rollback(99);
 
-        static::assertEquals(0, $migration->count());
-        static::assertStringContainsString('WARNING rollback - CANCELED - nothing to rollback', implode("\n", $logger->getItems()));
+        self::assertEquals(0, $migration->count());
+        self::assertStringContainsString('WARNING rollback - CANCELED - nothing to rollback', implode("\n", $logger->getItems()));
     }
 
     public function testMigrationsFileLock() : void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('lock migrations file');
+        self::expectException(MigrationException::class);
+        self::expectExceptionMessage('lock migrations file');
 
-        $migration = (new MigrationMock(static::$migrationsFile, null));
+        $migration = (new MigrationMock(self::$migrationsFile, null));
 
-        $handle = fopen(static::$migrationsFile, 'r+');
+        $handle = fopen(self::$migrationsFile, 'r+');
 
         if (!flock($handle, LOCK_EX)) {
             throw new Exception('lock file');
@@ -132,12 +132,12 @@ final class AbstractMigrationTest extends TestCase
 
     public function testMigrationsRollbackFileLock() : void
     {
-        static::expectException(MigrationException::class);
-        static::expectExceptionMessage('lock migrations file');
+        self::expectException(MigrationException::class);
+        self::expectExceptionMessage('lock migrations file');
 
-        $migration = (new MigrationMock(static::$migrationsFile, null));
+        $migration = (new MigrationMock(self::$migrationsFile, null));
 
-        $handle = fopen(static::$migrationsFile, 'r+');
+        $handle = fopen(self::$migrationsFile, 'r+');
         if (!flock($handle, LOCK_EX)) {
             throw new Exception('lock file');
         }
@@ -156,22 +156,22 @@ final class AbstractMigrationTest extends TestCase
 
     public function testMigrationFileContainsExtraLines() : void
     {
-        file_put_contents(static::$migrationsFile, "\n\n\nup1\nup2\n\n");
+        file_put_contents(self::$migrationsFile, "\n\n\nup1\nup2\n\n");
 
-        $migration = (new MigrationMock(static::$migrationsFile, null))
+        $migration = (new MigrationMock(self::$migrationsFile, null))
             ->migrate(null);
 
-        static::assertSame(3, $migration->count());
+        self::assertSame(3, $migration->count());
     }
 
     public function testMigrationFileContainsWindowsNewLines() : void
     {
-        file_put_contents(static::$migrationsFile, "up1\r\nup2\r\n");
+        file_put_contents(self::$migrationsFile, "up1\r\nup2\r\n");
 
-        $migration = (new MigrationMock(static::$migrationsFile, null))
+        $migration = (new MigrationMock(self::$migrationsFile, null))
             ->migrate(null);
 
-        static::assertSame(3, $migration->count());
+        self::assertSame(3, $migration->count());
     }
 }
 

@@ -28,7 +28,7 @@ abstract class AbstractPDOMigration extends AbstractMigration
     /**
      * Run sql query
      *
-     * @param  string $sql
+     * @param string $sql
      *
      * @return self
      */

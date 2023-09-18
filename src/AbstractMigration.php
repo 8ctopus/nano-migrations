@@ -82,7 +82,7 @@ abstract class AbstractMigration
 
             $this->saveMigrated($handle, $migrated);
 
-            $this->count += 1;
+            ++$this->count;
         }
 
         fclose($handle);
@@ -147,7 +147,7 @@ abstract class AbstractMigration
             // save rollback
             $this->saveMigrated($handle, $migrated);
 
-            $this->count += 1;
+            ++$this->count;
         }
 
         fclose($handle);

@@ -6,6 +6,4 @@ namespace Oct8pus\Migration;
 
 use Exception;
 
-class MigrationException extends Exception
-{
-}
+class MigrationException extends Exception {}
