@@ -90,7 +90,7 @@ final class AbstractMigrationTest extends TestCase
             ->migrate(null)
             ->migrate(null);
 
-        self::assertEquals(0, $migration->count());
+        self::assertSame(0, $migration->count());
         self::assertStringContainsString('INFO migrate - CANCELED - nothing to migrate', implode("\n", $logger->getItems()));
     }
 
@@ -102,7 +102,7 @@ final class AbstractMigrationTest extends TestCase
             ->rollback(99)
             ->rollback(99);
 
-        self::assertEquals(0, $migration->count());
+        self::assertSame(0, $migration->count());
         self::assertStringContainsString('WARNING rollback - CANCELED - nothing to rollback', implode("\n", $logger->getItems()));
     }
 

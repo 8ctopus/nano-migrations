@@ -274,7 +274,7 @@ abstract class AbstractMigration
     {
         $methods = get_class_methods($this);
 
-        return array_filter($methods, function (string $method) use ($filter) {
+        return array_filter($methods, static function (string $method) use ($filter) {
             if (preg_match("/^{$filter}(\\d{1,2})$/", $method) === 1) {
                 return true;
             }

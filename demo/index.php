@@ -28,7 +28,7 @@ if (\PHP_SAPI !== 'cli') {
 $router = new Router();
 
 // add route helper
-$router->add('[--help | -h]', function () use ($router) : void {
+$router->add('[--help | -h]', static function () use ($router) : void {
     echo 'Usage:' . PHP_EOL;
 
     foreach ($router->getRoutes() as $route) {
@@ -38,12 +38,12 @@ $router->add('[--help | -h]', function () use ($router) : void {
 
 $migration = new Migration(__DIR__ . '/migrations.txt', 'localhost', 'root', '123', 'test', $logger);
 
-$router->add('migrate [<count>]', function (array $args) use ($migration) : void {
+$router->add('migrate [<count>]', static function (array $args) use ($migration) : void {
     $count = array_key_exists('count', $args) ? (int) $args['count'] : null;
     $migration->migrate($count);
 });
 
-$router->add('rollback [<count>]', function (array $args) use ($migration) : void {
+$router->add('rollback [<count>]', static function (array $args) use ($migration) : void {
     $count = array_key_exists('count', $args) ? (int) $args['count'] : 0;
     $migration->rollback($count);
 });

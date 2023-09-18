@@ -55,7 +55,7 @@ final class AbstractPDOMigrationTest extends TestCase
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
         SQL;
 
-        self::assertEquals($expected, $output['Create Table']);
+        self::assertSame($expected, $output['Create Table']);
 
         $migration->rollback(4);
 
@@ -70,7 +70,7 @@ final class AbstractPDOMigrationTest extends TestCase
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci
         SQL;
 
-        self::assertEquals($expected, $output['Create Table']);
+        self::assertSame($expected, $output['Create Table']);
     }
 
     public function testWithMigrateCountOK() : void

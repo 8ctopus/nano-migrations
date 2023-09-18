@@ -52,7 +52,7 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         , firstName VARCHAR(255) NOT NULL, lastName VARCHAR(40) NOT NULL, blocked BIT DEFAULT false)
         SQL;
 
-        self::assertEquals($expected, $output['sql']);
+        self::assertSame($expected, $output['sql']);
 
         $migration->rollback(4);
 
@@ -67,7 +67,7 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
         )
         SQL;
 
-        self::assertEquals($expected, $output['sql']);
+        self::assertSame($expected, $output['sql']);
     }
 
     public function testWithMigrateCountOK() : void
