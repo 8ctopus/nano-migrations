@@ -68,16 +68,24 @@ final class Migration extends AbstractPDOMigration
     /**
      * Safety check
      *
+     * @param array $methods
+     *
      * @return self
      *
      * @throws MigrationException
      */
-    protected function safetyCheck() : self
+    protected function safetyCheck(array $methods) : self
     {
         $stdin = fopen('php://stdin', 'r', false);
 
         if ($stdin === false) {
             throw new MigrationException('fopen');
+        }
+
+        $this->logger?->info('migrations to run:');
+
+        foreach ($methods as $method) {
+            $this->logger?->info("- {$method}");
         }
 
         $this->logger?->warning('Confirm action (y/n): ');

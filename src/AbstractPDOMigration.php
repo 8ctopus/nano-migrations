@@ -25,6 +25,13 @@ abstract class AbstractPDOMigration extends AbstractMigration
         $this->db = $db;
     }
 
+    /**
+     * Run sql query
+     *
+     * @param  string $sql
+     *
+     * @return self
+     */
     protected function query(string $sql) : self
     {
         $this->db->query($sql);

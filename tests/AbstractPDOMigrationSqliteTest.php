@@ -82,7 +82,7 @@ final class AbstractPDOMigrationSqliteTest extends TestCase
 
 class SqliteMigrationMock extends AbstractPDOMigration
 {
-    protected function safetyCheck() : self
+    protected function safetyCheck(array $methods) : self
     {
         return $this;
     }
@@ -108,62 +108,62 @@ class SqliteMigrationMock extends AbstractPDOMigration
     protected function up2() : string
     {
         return <<<'SQL'
-            ALTER TABLE user
-            ADD COLUMN firstName VARCHAR(255) NOT NULL
+        ALTER TABLE user
+        ADD COLUMN firstName VARCHAR(255) NOT NULL
         SQL;
     }
 
     protected function down2() : string
     {
         return <<<'SQL'
-            ALTER TABLE user
-            DROP COLUMN firstName
+        ALTER TABLE user
+        DROP COLUMN firstName
         SQL;
     }
 
     protected function up3() : string
     {
         return <<<'SQL'
-            ALTER TABLE user RENAME TO users
+        ALTER TABLE user RENAME TO users
         SQL;
     }
 
     protected function down3() : string
     {
         return <<<'SQL'
-            ALTER TABLE users RENAME TO user
+        ALTER TABLE users RENAME TO user
         SQL;
     }
 
     protected function up4() : string
     {
         return <<<'SQL'
-            ALTER TABLE users
-            ADD COLUMN lastName VARCHAR(40) NOT NULL
+        ALTER TABLE users
+        ADD COLUMN lastName VARCHAR(40) NOT NULL
         SQL;
     }
 
     protected function down4() : string
     {
         return <<<'SQL'
-            ALTER TABLE users
-            DROP COLUMN lastName
+        ALTER TABLE users
+        DROP COLUMN lastName
         SQL;
     }
 
     protected function up5() : string
     {
         return <<<'SQL'
-            ALTER TABLE users
-            ADD COLUMN blocked BIT DEFAULT false
+        ALTER TABLE users
+        ADD COLUMN blocked BIT DEFAULT false
         SQL;
     }
 
     protected function down5() : string
     {
         return <<<'SQL'
-            ALTER TABLE users
-            DROP COLUMN blocked
+        ALTER TABLE users
+        DROP COLUMN blocked
         SQL;
     }
 }

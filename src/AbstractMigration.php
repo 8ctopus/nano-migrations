@@ -66,7 +66,7 @@ abstract class AbstractMigration
             return $this;
         }
 
-        $this->safetyCheck();
+        $this->safetyCheck($methods);
 
         // go through all methods
         foreach ($methods as $method) {
@@ -130,7 +130,7 @@ abstract class AbstractMigration
             return $this;
         }
 
-        $this->safetyCheck();
+        $this->safetyCheck($methods);
 
         // rollback
         foreach ($methods as $method) {
@@ -174,11 +174,13 @@ abstract class AbstractMigration
     /**
      * Safety check before migrations are run
      *
+     * @param array $methods
+     *
      * @return self
      *
      * @throws MigrationException
      */
-    abstract protected function safetyCheck() : self;
+    abstract protected function safetyCheck(array $methods) : self;
 
     /**
      * Open file
