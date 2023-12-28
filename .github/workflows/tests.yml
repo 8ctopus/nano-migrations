@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'src/**'
+      - 'tests/**'
+      - composer.json
   push:
     branches:
       - master
@@ -21,7 +23,7 @@ jobs:
 
     strategy:
       matrix:
-        php-version: [8.2]
+        php-version: [8.2, 8.3]
 
         dependencies:
           - "highest"
