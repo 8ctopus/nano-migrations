@@ -1,9 +1,9 @@
 # nano migrations
 
-[![packagist](http://poser.pugx.org/8ctopus/nano-migrations/v)](https://packagist.org/packages/8ctopus/nano-migrations)
-[![downloads](http://poser.pugx.org/8ctopus/nano-migrations/downloads)](https://packagist.org/packages/8ctopus/nano-migrations)
-[![min php version](http://poser.pugx.org/8ctopus/nano-migrations/require/php)](https://packagist.org/packages/8ctopus/nano-migrations)
-[![license](http://poser.pugx.org/8ctopus/nano-migrations/license)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![packagist](https://poser.pugx.org/8ctopus/nano-migrations/v)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![downloads](https://poser.pugx.org/8ctopus/nano-migrations/downloads)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![min php version](https://poser.pugx.org/8ctopus/nano-migrations/require/php)](https://packagist.org/packages/8ctopus/nano-migrations)
+[![license](https://poser.pugx.org/8ctopus/nano-migrations/license)](https://packagist.org/packages/8ctopus/nano-migrations)
 [![tests](https://github.com/8ctopus/nano-migrations/actions/workflows/tests.yml/badge.svg)](https://github.com/8ctopus/nano-migrations/actions/workflows/tests.yml)
 ![code coverage badge](https://raw.githubusercontent.com/8ctopus/nano-migrations/image-data/coverage.svg)
 ![lines of code](https://raw.githubusercontent.com/8ctopus/nano-migrations/image-data/lines.svg)
