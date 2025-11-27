@@ -16,3 +16,4 @@ abstract class TestCase extends BaseTestCase
         file_put_contents(static::$migrationsFile, '');
     }
 }
+
